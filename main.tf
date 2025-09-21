@@ -34,6 +34,23 @@ resource "aws_s3_bucket_acl" "acl" {
   acl    = "public-read"
 }
 
+resource "aws_s3_bucket_policy" "public_policy" {
+  bucket = aws_s3_bucket.aws-s3.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect    = "Allow"
+        Principal = "*"
+        Action    = ["s3:GetObject"]
+        Resource  = "${aws_s3_bucket.aws-s3.arn}/*"
+      }
+    ]
+  })
+}
+
+
 resource "aws_s3_object" "index" {
   bucket       = aws_s3_bucket.aws-s3.id
   key          = "index.html"
